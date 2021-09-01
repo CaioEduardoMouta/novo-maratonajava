@@ -1,4 +1,4 @@
-package com.company;
+package academy.devdojo.maratonajava.introducao;
 
 public class OlaDevDojo {
 
