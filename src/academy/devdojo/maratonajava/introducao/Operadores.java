@@ -21,9 +21,18 @@ public class Operadores {
         System.out.println("Dez menor que Vinte" + dezMenorQueVinte);
         System.out.println("Dez igual a Vinte" + dezIgualAVinte);
         System.out.println("Dez igual a Dez" + dezIgualDez);
-        System.out.println("");
+        System.out.println("Dez diferente de dez" + dezDiferenteDez);
 
+        // &&(AND) , ||(OR) , ! (NOT)
+        int idade = 28;
+        float salario = 4000F;
+        boolean isDentroDaLeiMaiorQueTrinta = idade >= 30 && salario > 4612;
+        boolean isDentroDaLeiMenorQueTrinta = idade < 30 && salario >= 3381;
+        System.out.println("isDentroDaLeiMaiorQueTrinta " + isDentroDaLeiMaiorQueTrinta);
+        System.out.println("isDentroDaLeiMenorQueTrinta " + isDentroDaLeiMenorQueTrinta);
 
+        double valorTotalContaCorrente = 200;
+        double valorTotalContaPoupanca = 3000;
 
 
     }
