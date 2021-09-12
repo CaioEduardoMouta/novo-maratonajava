@@ -11,6 +11,6 @@ public class FuncionarioTest01 {
         funcionario.setSalarios(new double[]{2221,5432,3555,9221});
         funcionario.imprime();
         System.out.println("Media "+funcionario.getMedia());
-        funcionario.imprimeMediaSalario();
+
     }
 }
