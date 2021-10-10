@@ -19,10 +19,18 @@ public class BasicFileAtributesTest02 {
         System.out.println("Creation Time"+creationTime);
         System.out.println("LastModifiedTime"+lastModifiedTime);
         System.out.println("lastAcessTime"+ lastAcessTime);
-
-       BasicFileAttributeView fileAttributeView = Files.getFileAttributeView(path, BasicFileAttributes.class);
+        System.out.println("----------------");
+       BasicFileAttributeView fileAttributeView = Files.getFileAttributeView(path, BasicFileAttributeView.class);
        FileTime newCreationTime = FileTime.fromMillis(System.currentTimeMillis());
        fileAttributeView.setTimes(lastModifiedTime, newCreationTime, creationTime );
-       
+
+        creationTime = fileAttributeView.readAttributes().creationTime();
+        lastModifiedTime = fileAttributeView.readAttributes().lastModifiedTime();
+        lastAcessTime = fileAttributeView.readAttributes().lastAccessTime();
+
+        System.out.println("Creation Time"+creationTime);
+        System.out.println("LastModifiedTime"+lastModifiedTime);
+        System.out.println("lastAcessTime"+ lastAcessTime);
+
     }
 }
