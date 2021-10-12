@@ -1,5 +1,7 @@
 package academy.devdojo.maratonajava.javacore.Ycolecoes.dominio;
 
+import java.util.Objects;
+
 public class Smartphone {
     private String serialNumber;
     private String marca;
@@ -18,6 +20,19 @@ public class Smartphone {
        return serialNumber != null && serialNumber.equals(smartphone.serialNumber);
     }
 
+    @Override
+    public int hashCode() {
+        return serialNumber == null ? 0 : this.serialNumber.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return "Smartphone{" +
+                "serialNumber='" + serialNumber + '\'' +
+                ", marca='" + marca + '\'' +
+                '}';
+    }
+
     public String getSerialNumber() {
         return serialNumber;
     }
@@ -33,4 +48,6 @@ public class Smartphone {
     public void setMarca(String marca) {
         this.marca = marca;
     }
+
+
 }
