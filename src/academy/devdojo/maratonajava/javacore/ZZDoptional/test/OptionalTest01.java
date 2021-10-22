@@ -20,9 +20,7 @@ public class OptionalTest01 {
         nameOptional.ifPresent(s -> System.out.println(s.toUpperCase()));
         System.out.println(empty);
 
-
     }
-
     private static Optional<String> findName(String name){
         List<String> list =List.of("Caio","Full Cycle");
         int i = list.indexOf(name);
