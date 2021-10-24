@@ -1,7 +1,9 @@
 package academy.devdojo.maratonajava.javacore.ZZEstreams.test;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class StreamTest04 {
 
@@ -10,6 +12,17 @@ public class StreamTest04 {
         List<String> graphicDesigners = List.of("Caio","Eduardo","Mouta");
         List<String> developers = List.of("Marlene","Monteiro","Mouta");
         List<String> students = List.of("Maya","Martins","Mouta");
+        devdojo.add(graphicDesigners);
+        devdojo.add(developers);
+        devdojo.add(students);
+        for (List<String> people : devdojo) {
+            for (String person: people) {
+                System.out.println(person);
+            }
+        }
+        System.out.println("-------------");
+        devdojo.stream()
+                .flatMap(Collection::stream).forEach(System.out::println);
 
     }
 }
