@@ -3,6 +3,7 @@ package academy.devdojo.maratonajava.javacore.ZZEstreams.test;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+
 public class StreamTest16 {
 
     public static void main(String[] args) {
