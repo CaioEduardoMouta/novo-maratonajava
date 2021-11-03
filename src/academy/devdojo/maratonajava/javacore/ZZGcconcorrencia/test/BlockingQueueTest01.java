@@ -8,9 +8,9 @@ public class BlockingQueueTest01 {
     public static void main(String[] args) throws InterruptedException {
         BlockingQueue<String> bq = new ArrayBlockingQueue<>(1);
         bq.put("Caio");
-        System.out.printf("%s added the value %s%n", Thread.currentThread().getName(), bq.peek());
-        System.out.println("tentando adicionar outro valor");
-        new Thread(new RemoveFromQueue());
+        System.out.printf("%s adicionar o valor %s%n", Thread.currentThread().getName(), bq.peek());
+        System.out.println("tentando adicionar novo valor");
+        new Thread(new RemoveFromQueue(bq)).start();
         bq.put("Mouta");
         System.out.printf("%s adicionar o valor %s%n", Thread.currentThread().getName(), bq.peek());
     }
@@ -24,10 +24,10 @@ public class BlockingQueueTest01 {
 
         @Override
         public void run() {
-            System.out.printf("%s adicionar o valor %s%n", Thread.currentThread().getName(), bq.peek());
+            System.out.printf("%s adicionar o valor %n", Thread.currentThread().getName());
             try {
-                TimeUnit.SECONDS.sleep(2);
-                System.out.println("%s removing value from queue %s%n ");
+                TimeUnit.SECONDS.sleep(5);
+                System.out.printf("%s Removendo o valor s%n ", Thread.currentThread().getName(), bq.take());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
