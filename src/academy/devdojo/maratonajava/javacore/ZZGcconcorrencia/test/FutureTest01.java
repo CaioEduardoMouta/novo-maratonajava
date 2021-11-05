@@ -3,7 +3,7 @@ package academy.devdojo.maratonajava.javacore.ZZGcconcorrencia.test;
 import java.util.concurrent.*;
 
 public class FutureTest01 {
-    public static void main(String[] args) throws ExecutionException, InterruptedException, TimeoutException {
+    public static void main(String[] args)  {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<Double> dollarRequest = executorService.submit(() -> {
                 TimeUnit.SECONDS.sleep(2);
@@ -11,7 +11,16 @@ public class FutureTest01 {
 
         });
         System.out.println(doSomething());
-        Double dollarResponse = dollarRequest.get(3,TimeUnit.SECONDS);
+        Double dollarResponse = null;
+        try {
+            dollarResponse = dollarRequest.get(3, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException | TimeoutException e) {
+            e.printStackTrace();
+        }finally {
+            executorService.shutdown();
+        }
         System.out.println("Dollar "+dollarResponse);
         executorService.shutdown();
     }
