@@ -32,6 +32,8 @@ public class Pessoa {
         public PessoaBuilder() {
         }
 
+
+
         public PessoaBuilder firstName(String firstName){
             this.firstName = firstName;
             return this;
@@ -56,5 +58,8 @@ public class Pessoa {
             return new Pessoa(firstName,lastName,username,email);
         }
 
+        public String getFirstName() {
+            return firstName;
+        }
     }
 }
