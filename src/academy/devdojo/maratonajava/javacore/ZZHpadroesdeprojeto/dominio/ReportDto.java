@@ -4,14 +4,14 @@ public class ReportDto {
     private String aircraftName;
     private Country country;
     private Currency currency;
-    private String personName;
+    private String PersonName;
 
 
     public static final class ReportDtoBuilder {
         private String aircraftName;
         private Country country;
         private Currency currency;
-        private String personName;
+        private String PersonName;
 
         private ReportDtoBuilder() {
         }
@@ -35,16 +35,17 @@ public class ReportDto {
             return this;
         }
 
-        public ReportDtoBuilder personName(String personName) {
-            this.personName = personName;
+        public ReportDtoBuilder personName(Pessoa pessoa) {
+            this.PersonName  = PersonName;
             return this;
         }
+
 
         public ReportDto build() {
             ReportDto reportDto = new ReportDto();
             reportDto.aircraftName = this.aircraftName;
             reportDto.country = this.country;
-            reportDto.personName = this.personName;
+            reportDto.PersonName = this.PersonName;
             reportDto.currency = this.currency;
             return reportDto;
         }
@@ -55,9 +56,11 @@ public class ReportDto {
                     "aircraftName='" + aircraftName + '\'' +
                     ", country=" + country +
                     ", currency=" + currency +
-                    ", personName='" + personName + '\'' +
+                    ", personName='" + PersonName + '\'' +
                     '}';
         }
+
+
     }
 
 }

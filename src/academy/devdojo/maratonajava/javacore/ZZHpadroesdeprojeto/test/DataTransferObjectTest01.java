@@ -16,9 +16,9 @@ public class DataTransferObjectTest01 {
                 .aircraftName(aircraft.getName())
                 .country(country)
                 .currency(currency)
-                .personName(pessoa.getFirstName())
+                .personName(pessoa)
                 .build();
-        System.out.println(reportDto);
+        System.out.println();
 
     }
 }

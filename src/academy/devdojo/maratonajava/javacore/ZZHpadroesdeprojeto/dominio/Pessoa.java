@@ -23,7 +23,7 @@ public class Pessoa {
                 '}';
     }
 
-    public static class PessoaBuilder{
+    public static final class PessoaBuilder {
         private String firstName;
         private String lastName;
         private String username;
@@ -32,34 +32,33 @@ public class Pessoa {
         public PessoaBuilder() {
         }
 
+        public static PessoaBuilder builder() {
+            return new PessoaBuilder();
+        }
 
-
-        public PessoaBuilder firstName(String firstName){
+        public PessoaBuilder firstName(String firstName) {
             this.firstName = firstName;
             return this;
         }
 
-        public PessoaBuilder lastName(String lastName){
+        public PessoaBuilder lastName(String lastName) {
             this.lastName = lastName;
             return this;
         }
 
-        public PessoaBuilder username(String username){
+        public PessoaBuilder username(String username) {
             this.username = username;
             return this;
         }
 
-        public PessoaBuilder email(String email){
+        public PessoaBuilder email(String email) {
             this.email = email;
             return this;
         }
 
-        public Pessoa build(){
-            return new Pessoa(firstName,lastName,username,email);
-        }
 
-        public String getFirstName() {
-            return firstName;
+        public Pessoa build() {
+            return new Pessoa(firstName, lastName, username, email);
         }
     }
 }
