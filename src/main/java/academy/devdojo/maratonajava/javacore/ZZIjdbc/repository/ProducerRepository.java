@@ -132,13 +132,13 @@ public class ProducerRepository {
             }
             if(dbmetaData.supportsResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE)){
                 log.info("Support TYPE_SCROLL_INSENSITIVE");
-                if(dbmetaData.supportsResultSetConcurrency(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)){
+                if(dbmetaData.supportsResultSetConcurrency(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE)){
                     log.info("And Supports CONCUR-UPDATABLE");
                 }
             }
-            if(dbmetaData.supportsResultSetType(ResultSet.TYPE_FORWARD_ONLY)){
-                log.info("Support TYPE_FORWARD_ONLY");
-                if(dbmetaData.supportsResultSetConcurrency(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE)){
+            if(dbmetaData.supportsResultSetType(ResultSet.TYPE_SCROLL_SENSITIVE)){
+                log.info("Support TYPE_SCROLL_SENSITIVE");
+                if(dbmetaData.supportsResultSetConcurrency(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE)){
                     log.info("And Supports CONCUR-UPDATABLE");
                 }
             }
@@ -147,6 +147,156 @@ public class ProducerRepository {
         }
 
 
+    }
+    public static void showTypeScrollWorking() {
+        String sql = "SELECT * FROM anime_store.producer;";
+        try (Connection conn = ConnectionFactory.getConnection();
+             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+             ResultSet rs = stmt.executeQuery(sql)) {
+            log.info("Last row '{}'",rs.last());
+            log.info("Row num '{}'",rs.getRow());
+            log.info(Producer
+                    .builder()
+                    .id(rs.getInt("id"))
+                    .name(rs.getString("name"))
+                    .build());
+
+            log.info("First row '{}'",rs.first());
+            log.info("Row number '{}'",rs.getRow());
+            log.info(Producer
+                    .builder()
+                    .id(rs.getInt("id"))
+                    .name(rs.getString("name"))
+                    .build());
+
+            log.info("Row Absolute? '{}'",rs.absolute(2));
+            log.info("Row number '{}'",rs.getRow());
+            log.info(Producer
+                    .builder()
+                    .id(rs.getInt("id"))
+                    .name(rs.getString("name"))
+                    .build());
+
+            log.info("Row Absolute? '{}'",rs.relative(-1));
+            log.info("Row number '{}'",rs.getRow());
+            log.info(Producer
+                    .builder()
+                    .id(rs.getInt("id"))
+                    .name(rs.getString("name"))
+                    .build());
+
+            log.info("is last? '{}'",rs.isLast());
+            log.info("Row number '{}'",rs.getRow());
+
+            log.info("is last? '{}'",rs.isFirst());
+            log.info("Row number '{}'",rs.getRow());
+
+            log.info("Last row? '{}'",rs.last());
+            log.info("-----------------");
+            rs.next();
+            log.info("After Last row? '{}'",rs.isAfterLast());
+            while(rs.previous()){
+                log.info(Producer
+                        .builder()
+                        .id(rs.getInt("id"))
+                        .name(rs.getString("name"))
+                        .build());
+            }
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto", e);
+        }
+
+    }
+
+    public static List<Producer> findByNameAndInsertWhenNotFound(String name) {
+        log.info("Procurando o nome");
+        String sql = "SELECT * FROM anime_store.producer where name like '%%%s%%';"
+                .formatted(name);
+        List<Producer> producers = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if(!rs.next()){
+                rs.moveToInsertRow();
+                rs.updateString("name",name);
+                rs.insertRow();
+            }
+            while (rs.next()) {
+                rs.updateString("name",rs.getString("name").toUpperCase());
+                rs.updateRow();
+                Producer producer = Producer
+                        .builder()
+                        .id(rs.getInt("id"))
+                        .name(rs.getString("name"))
+                        .build();
+                producers.add(producer);
+            }
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto", e);
+        }
+        return producers;
+    }
+
+    public static List<Producer> findByNameAndUpdateToUpperCase(String name) {
+        log.info("Procurando o nome");
+        String sql = "SELECT * FROM anime_store.producer where name like '%%%s%%';"
+                .formatted(name);
+        List<Producer> producers = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                rs.updateString("name",rs.getString("name").toUpperCase());
+                rs.updateRow();
+                Producer producer = Producer
+                        .builder()
+                        .id(rs.getInt("id"))
+                        .name(rs.getString("name"))
+                        .build();
+                producers.add(producer);
+            }
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto", e);
+        }
+        return producers;
+    }
+
+    public static List<Producer> findNameAndInsertWhenNotFound(String name) {
+        log.info("Procurando o nome");
+        String sql = "SELECT * FROM anime_store.producer where name like '%%%s%%';"
+                .formatted(name);
+        List<Producer> producers = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) return producers;
+
+            insertNewProducer(name, rs);
+
+            producers.add(getProducer(rs));
+
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto", e);
+        }
+        return producers;
+    }
+
+    private static void insertNewProducer(String name, ResultSet rs) throws SQLException {
+        rs.moveToInsertRow();
+        rs.updateString("name", name);
+        rs.updateRow();
+    }
+
+    private static Producer getProducer(ResultSet rs) throws SQLException {
+        rs.beforeFirst();
+        rs.next();
+        Producer producer = Producer
+                .builder()
+                .id(rs.getInt("id"))
+                .name(rs.getString("name"))
+                .build();
+        return producer;
     }
 
 

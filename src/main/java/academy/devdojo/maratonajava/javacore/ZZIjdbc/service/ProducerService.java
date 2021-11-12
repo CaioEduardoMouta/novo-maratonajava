@@ -30,7 +30,24 @@ public class ProducerService {
     }
 
     public static void showProducerMetadata(){
-         ProducerRepository.showProducerMetaData();
+
+        ProducerRepository.showProducerMetaData();
+    }
+
+    public static void showDriveMetaData(){
+
+        ProducerRepository.showDriveMetaData();
+    }
+
+    public static void showTypeScrollWorking() {
+        ProducerRepository.showTypeScrollWorking();
+    }
+    public static List<Producer> findByNameAndUpdateToUpperCase(String name){
+        return ProducerRepository.findByNameAndUpdateToUpperCase(name);
+    }
+
+    public static List<Producer> findNameAndInsertWhenNotFound(String name){
+        return ProducerRepository.findNameAndInsertWhenNotFound(name);
     }
 
     private static void requireValidId(Integer id){
