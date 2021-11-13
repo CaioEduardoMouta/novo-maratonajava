@@ -14,13 +14,36 @@ public class ProducerRepository {
     public static void save(Producer producer) {
         String sql = "INSERT INTO `anime_store`.`producer` (`name`) VALUES ('%s');".formatted(producer.getName());
         try (Connection conn = ConnectionFactory.getConnection();
-             Statement stmt = conn.createStatement()) {
-            int rowsAffected = stmt.executeUpdate(sql);
+             Statement ps = conn.createStatement()) {
+            int rowsAffected = ps.executeUpdate(sql);
             log.info("Database rows affected", producer.getName(), rowsAffected);
             System.out.println(rowsAffected);
         } catch (SQLException e) {
             log.error("Erro ao tentar inserir o produto '{}'", producer.getName(), e);
 
+        }
+    }
+
+    public static void saveTransaction(List<Producer> producers) {
+        try (Connection conn = ConnectionFactory.getConnection()) {
+            conn.setAutoCommit(false);
+            preparedStatementSaveTransaction(conn,producers);
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto '{}'", producers, e);
+
+        }
+    }
+
+    private static void  preparedStatementSaveTransaction (Connection conn, List<Producer> producers) throws SQLException{
+        String sql = "INSERT INTO `anime_store`.`producer` (`name`) VALUES (?);";
+        for(Producer p:producers){
+            try( PreparedStatement ps = conn.prepareStatement(sql)){
+                log.info("Saving producer '{}'",p.getName());
+                ps.setString(1,p.getName());
+                ps.execute();
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -50,9 +73,29 @@ public class ProducerRepository {
         }
     }
 
+    public static void updatePreparedStatement(Producer producer) {
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement ps = preparedStatementUpdate(conn, producer)) {
+            int rowsAffected = ps.executeUpdate();
+            log.info("Update producer '{]' rows affected", producer.getId(), rowsAffected);
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto '{}'", producer.getId(), e);
+
+        }
+    }
+
+    private static PreparedStatement preparedStatementUpdate (Connection conn, Producer producer) throws SQLException{
+        String sql = "UPDATE `anime_store`.`producer` SET `name` = ? WHERE (`id` = ?);";
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, producer.getName());
+        ps.setInt(2, producer.getId());
+        return ps;
+    }
+
     public static List<Producer> findAll() {
         log.info("Procurando todos o produtos");
         return findByName("");
+    }
 //        String sql = "SELECT id, name FROM anime_store.producer;";
 //        List<Producer> producers = new ArrayList<>();
 //        try (Connection conn = ConnectionFactory.getConnection();
@@ -71,7 +114,7 @@ public class ProducerRepository {
 //            log.error("Erro ao tentar inserir o produto", e);
 //        }
 //        return producers;
-        }
+
 
     public static List<Producer> findByName(String name) {
         log.info("Procurando todos o produtos por nome");
@@ -300,12 +343,10 @@ public class ProducerRepository {
 
     public static List<Producer> findByNamePreparedStatement(String name) {
         log.info("Procurando o nome");
-        String sql = "SELECT * FROM anime_store.producer where name like ? ;";
         List<Producer> producers = new ArrayList<>();
         try (Connection conn = ConnectionFactory.getConnection();
-             PreparedStatement ps = createdPreparedStatement(conn,sql,name);
+             PreparedStatement ps = preparedStatementFindByName(conn,name);
              ResultSet rs = ps.executeQuery()){
-             ps.setString(1,name);
 
             while(rs.next()){
                 Producer producer = Producer
@@ -321,10 +362,39 @@ public class ProducerRepository {
         return producers;
     }
 
-    private static PreparedStatement createdPreparedStatement(Connection conn,String sql, String name) throws SQLException{
+    private static PreparedStatement preparedStatementFindByName (Connection conn, String name) throws SQLException{
+        String sql = "SELECT * FROM anime_store.producer where name like ?;";
         PreparedStatement ps = conn.prepareStatement(sql);
-                ps.setString(1, name);
-                return ps;
+        ps.setString(1, String.format("%%%s%%",name));
+        return ps;
+    }
+
+    public static List<Producer> findByNameCallableStatement(String name) {
+        log.info("Procurando o nome");
+        List<Producer> producers = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement ps = callableStatementFindByName(conn,name);
+             ResultSet rs = ps.executeQuery()){
+
+            while(rs.next()){
+                Producer producer = Producer
+                        .builder()
+                        .id(rs.getInt("id"))
+                        .name(rs.getString("name"))
+                        .build();
+                producers.add(producer);
+            }
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto", e);
+        }
+        return producers;
+    }
+
+    private static CallableStatement callableStatementFindByName (Connection conn, String name) throws SQLException{
+        String sql = "CALL `anime_store`.`sp_get_producer_by_name`(?);";
+        CallableStatement cs = conn.prepareCall(sql);
+        cs.setString(1, String.format("%%%s%%",name));
+        return cs;
     }
 
     private static void insertNewProducer(String name, ResultSet rs) throws SQLException {

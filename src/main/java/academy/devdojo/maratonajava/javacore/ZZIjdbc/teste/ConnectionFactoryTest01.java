@@ -12,25 +12,32 @@ import java.util.List;
 public class ConnectionFactoryTest01 {
 
     public static void main(String[] args) {
-       Producer producer = Producer.builder().name("Studio Dean").build();
-       Producer producerToUpdate = Producer.builder().id(1).name("Caio Mouta").build();
-    //   ProducerService.save(producer);
-//       ProducerService.delete(4);
+        Producer producer = Producer.builder().name("Caio Mouta").build();
+        Producer producerToUpdate = Producer.builder().id(1).name("Eduardo Carrazedo").build();
+        //    ProducerService.save(producer);
+//        ProducerService.delete(4);
         //ProducerService.update(producerToUpdate);
-     //   List<Producer> producers = ProducerService.findAll();
+        //   List<Producer> producers = ProducerService.findAll();
         //List<Producer> producers = ProducerService.findByName("Cai");
-       // log.info("Producers found '{}'",producers);
+        // log.info("Producers found '{}'",producers);
 
         //ProducerService.showProducerMetadata();
-       // ProducerService.showDriveMetaData();
-       // ProducerService.showTypeScrollWorking();
+        // ProducerService.showDriveMetaData();
+        // ProducerService.showTypeScrollWorking();
         //List<Producer> producers = ProducerService.findByNameAndUpdateToUpperCase("Dean");
-       // List<Producer> producers = ProducerService.findNameAndInsertWhenNotFound("Caio Mouta");
-      //  log.info("Producers found '{}'", producers);
+        // List<Producer> producers = ProducerService.findNameAndInsertWhenNotFound("Caio Mouta");
+        //  log.info("Producers found '{}'", producers);
 
-       //ProducerService.findByNameAndDelete("NHK");
-        List<Producer> producers = ProducerService.findByNamePreparedStatement("Caio Mouta");
+        // ProducerService.findByNameAndDelete("NHK");
+//        List<Producer> producers = ProducerService.findByNamePreparedStatement("Caio Mouta");
+//        log.info("Producers found '{}'", producers);
+
+//        ProducerService.updatePreparedStatement(producerToUpdate);
+
+        List<Producer> producers = ProducerService.findByNameCallableStatement("Carrazedo");
         log.info("Producers found '{}'", producers);
+
+
 //        log.info("INFO");
 //        log.debug("INFO");
 //        log.warn("INFO");
