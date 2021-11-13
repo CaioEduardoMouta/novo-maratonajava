@@ -29,6 +29,10 @@ public class ProducerService {
         return ProducerRepository.findByName(name);
     }
 
+    public static List<Producer> findByNamePreparedStatement(String name) {
+        return ProducerRepository.findByNamePreparedStatement(name);
+    }
+
     public static void showProducerMetadata(){
 
         ProducerRepository.showProducerMetaData();
@@ -49,6 +53,10 @@ public class ProducerService {
     public static List<Producer> findNameAndInsertWhenNotFound(String name){
         return ProducerRepository.findNameAndInsertWhenNotFound(name);
     }
+    public static void findByNameAndDelete(String name){
+         ProducerRepository.findByNameAndDelete(name);
+    }
+
 
     private static void requireValidId(Integer id){
         if (id == null && id <= 0){

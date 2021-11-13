@@ -281,6 +281,51 @@ public class ProducerRepository {
         }
         return producers;
     }
+    public static List<Producer> findByNameAndDelete(String name) {
+        log.info("Procurando o nome");
+        String sql = "SELECT * FROM anime_store.producer where name like '%%%s%%';"
+                .formatted(name);
+        List<Producer> producers = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+             ResultSet rs = stmt.executeQuery(sql)) {
+           while(rs.next()){
+
+           }
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto", e);
+        }
+        return producers;
+    }
+
+    public static List<Producer> findByNamePreparedStatement(String name) {
+        log.info("Procurando o nome");
+        String sql = "SELECT * FROM anime_store.producer where name like ? ;";
+        List<Producer> producers = new ArrayList<>();
+        try (Connection conn = ConnectionFactory.getConnection();
+             PreparedStatement ps = createdPreparedStatement(conn,sql,name);
+             ResultSet rs = ps.executeQuery()){
+             ps.setString(1,name);
+
+            while(rs.next()){
+                Producer producer = Producer
+                        .builder()
+                        .id(rs.getInt("id"))
+                        .name(rs.getString("name"))
+                        .build();
+                producers.add(producer);
+            }
+        } catch (SQLException e) {
+            log.error("Erro ao tentar inserir o produto", e);
+        }
+        return producers;
+    }
+
+    private static PreparedStatement createdPreparedStatement(Connection conn,String sql, String name) throws SQLException{
+        PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setString(1, name);
+                return ps;
+    }
 
     private static void insertNewProducer(String name, ResultSet rs) throws SQLException {
         rs.moveToInsertRow();
@@ -297,6 +342,8 @@ public class ProducerRepository {
                 .name(rs.getString("name"))
                 .build();
         return producer;
+
+
     }
 
 

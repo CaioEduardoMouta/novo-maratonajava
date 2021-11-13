@@ -25,7 +25,11 @@ public class ConnectionFactoryTest01 {
        // ProducerService.showDriveMetaData();
        // ProducerService.showTypeScrollWorking();
         //List<Producer> producers = ProducerService.findByNameAndUpdateToUpperCase("Dean");
-        List<Producer> producers = ProducerService.findNameAndInsertWhenNotFound("Mouta");
+       // List<Producer> producers = ProducerService.findNameAndInsertWhenNotFound("Caio Mouta");
+      //  log.info("Producers found '{}'", producers);
+
+       //ProducerService.findByNameAndDelete("NHK");
+        List<Producer> producers = ProducerService.findByNamePreparedStatement("Caio Mouta");
         log.info("Producers found '{}'", producers);
 //        log.info("INFO");
 //        log.debug("INFO");
